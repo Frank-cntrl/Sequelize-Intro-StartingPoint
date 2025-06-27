@@ -21,15 +21,15 @@ description: {
   type: DataTypes.STRING,
   allowNull: false,
 },
-complete:{
+completed:{
   type: DataTypes.BOOLEAN,
+  allowNull: false,
+  defaultValue: false,
 },
 userId:{
   type: DataTypes.INTEGER,
   allowNull: false,
 },
 });
-
-Task.belongsTo(User);
 
 module.exports = Task;

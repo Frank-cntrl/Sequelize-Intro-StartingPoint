@@ -18,42 +18,51 @@ router.get("/", async(req, res) => {
 // GET a single task by id
 
 // Patch a task by id
-router.patch("/:id", async(req,res) => {
-  try{
-  const id = Number(req.params.id);
-  const task = req.body;
-  const updatedTask = Task.update(id, task);
-  res.json(updatedTask);
-  }catch (error){
-    res.status(500).send({error: error.message});
+router.patch("/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { title, description, completed } = req.body;
+    const [updatedRows] = await Task.update(
+      { title, description, completed },
+      { where: { id } }
+    );
+    if (updatedRows === 0) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+    const updatedTask = await Task.findByPk(id);
+    res.json(updatedTask);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
   }
 });
 
-// Delete a task by id
-router.delete("/:id", async(req, res) => {
-  try{
-  const id = Number(req.params.id);
-  const removeTask = Task.delete(id);
-  res.status(200).json(removeTask);
-  }catch (error){
-    res.status(500).send({error: error.message});
+// DELETE a task by id
+router.delete("/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const deletedRows = await Task.destroy({ where: { id } });
+    if (deletedRows === 0) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).send({ error: error.message });
   }
 });
 
 
 // Create a new task
-router.post("/", async(req, res) => {
-  try{
-  const { title, description, userId } = req.body;
-  const newTask = Task.create({
-    title,
-    description,
-    completed: false,
-    userId: Number(userId),
-  });
-  res.status(201).json(newTask);
-  }catch (error){
-    res.status(500).send({error: error.message});
+router.post("/", async (req, res) => {
+  try {
+    const { title, description, userId } = req.body;
+    const newTask = await Task.create({
+      title,
+      description,
+      userId: userId || 1, // Use 1 if not provided
+    });
+    res.status(201).json(newTask);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
   }
 });
 
