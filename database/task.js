@@ -3,6 +3,20 @@ const db = require("./db");
 
 // TASK 1: Define the Task model here
 const Task = db.define("task", {
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false, // This makes the title required
+  }, 
+  description: {
+    type: DataTypes.STRING,
+    allowNull: false, // This makes the description required
+  },
+  completed: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false, // Default value for completed is false
+  },
+
+  
   // You should define the following columns:
   // - title: string, required
   // - description: string, required

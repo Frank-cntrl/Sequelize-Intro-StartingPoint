@@ -7,17 +7,75 @@ const { Task, User } = require("../database");
 
 // GET all tasks
 router.get("/", async (req, res) => {
-  // Replace this with your code!
-  res.status(501).send("Not implemented");
+  try {
+    const tasks = await Task.findAll();
+    res.json(tasks);
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // GET a single task by id
+router.get("/:id", async (req, res) => {
+  try {
+    const task = await Task.findByPk(req.params.id);
+    if (task) {
+      res.json(task);
+    } else {
+      res.status(404).send("Task not found");
+    }
+  } catch (error) {
+    console.error("Error fetching task:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
-// Patch a task by id
+// PATCH a task
+router.patch("/:id", async (req, res) => {
+  try {
+    const [updated] = await Task.update(req.body, {
+      where: { id: req.params.id },
+    });
+    if (updated) {
+      const updatedTask = await Task.findByPk(req.params.id);
+      res.json(updatedTask);
+    } else {
+      res.status(404).send("Task not found");
+    }
+  } catch (error) {
+    console.error("Error updating task:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
-// Delete a task by id
+// DELETE a task
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleted = await Task.destroy({
+      where: { id: req.params.id },
+    });
+    if (deleted) {
+      res.status(204).send();
+    } else {
+      res.status(404).send("Task not found");
+    }
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
-// Create a new task
+// POST create a new task
+router.post("/", async (req, res) => {
+  try {
+    const newTask = await Task.create(req.body);
+    res.status(201).json(newTask);
+  } catch (error) {
+    console.error("Error creating task:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 module.exports = router;
 

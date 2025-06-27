@@ -96,18 +96,22 @@ const Task = {
   },
 };
 
+// Get all users
 const User = {
   findAll: function () {
     return users;
   },
+// Get a user by primary key (id)
   findByPk: function (id) {
     return users.find((user) => user.id === id);
   },
+// Create a new user
   create: function (user) {
     user.id = nextUserId++;
     users.push(user);
     return user;
   },
+// Update a user by primary key (id)
   update: function (id, user) {
     const index = users.findIndex((user) => user.id === id);
     if (index === -1) {
@@ -116,6 +120,7 @@ const User = {
     users[index] = { ...users[index], ...user };
     return user;
   },
+// Delete a user by primary key (id)
   delete: function (id) {
     const index = users.findIndex((user) => user.id === id);
     if (index === -1) {
