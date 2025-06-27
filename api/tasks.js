@@ -8,7 +8,7 @@ const { Task, User } = require("../database");
 // GET all tasks
 router.get("/", async(req, res) => {
   try{
-  const task = Task.findAll();
+  const task = await Task.findAll();
   res.json(task);
   }catch (error){
     res.status(500).send({error: error.message});
